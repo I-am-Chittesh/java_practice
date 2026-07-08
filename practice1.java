@@ -9,6 +9,7 @@ public class practice1{
 
          int shapenum = input.nextInt();
          if (shapenum==1){
+            System.out.println("Enter rectangle dimensions");
             double a= input.nextDouble();
             double b= input.nextDouble();
 
@@ -17,6 +18,7 @@ public class practice1{
          }
 
          else if (shapenum==2){
+            System.out.println("Enter triangle dimensions");
             double a=input.nextDouble();
             double b= input.nextDouble();
 
