@@ -1,3 +1,7 @@
-public class practice1 {
-    
+import java.util.Scanner;
+
+public class practice1{
+    public static void main(String[] args){
+        
+    }
 }
