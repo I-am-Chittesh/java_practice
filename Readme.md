@@ -3,5 +3,5 @@
 ## Fall 2026-27
 ---
 ```
-Last update 7/726
+chumma bro i am doing this 
 ```
