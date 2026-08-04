@@ -10,7 +10,7 @@ public class string{
         for(int i=st.length-1;i>=0;i--){
             str.append(st[i]+" ");
         }
-        System.out.println("The reve string is:"+str);
+        System.out.println("The reve string is:"+str.toString().trim());
         sc.close();
     }
 }
