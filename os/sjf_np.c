@@ -1,42 +1,64 @@
 #include <stdio.h>
+
+typedef struct {
+    int pid, at, bt, rt, ct, tat, wt;
+} Process;
+
 int main() {
-    int at[10], bt[10], temp[10];
-    int i, smallest, count = 0, time, limit;
-    double wt = 0, tat = 0, end;
-    float avg_wt, avg_tat;
-    
-    printf("Enter the Total Number of Processes: ");
-    scanf("%d", &limit);
-    printf("Enter Details of %d Processes:\n", limit);
-    for(i = 0; i < limit; i++) {
-        printf("Enter Arrival Time: ");
-        scanf("%d", &at[i]);
-        printf("Enter Burst Time: ");
-        scanf("%d", &bt[i]);
-        temp[i] = bt[i];
+    int n;
+    Process p[100];
+    float total_tat = 0, total_wt = 0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        p[i].pid = i + 1;
+        printf("Enter Arrival Time and Burst Time for P%d: ", i + 1);
+        scanf("%d %d", &p[i].at, &p[i].bt);
+        p[i].rt = p[i].bt; // Remaining time equals burst time initially
     }
-    
-    bt[9] = 9999;
-    for(time = 0; count != limit; time++) {
-        smallest = 9;
-        for(i = 0; i < limit; i++) {
-            if(at[i] <= time && bt[i] < bt[smallest] && bt[i] > 0) {
-                smallest = i;
+
+    int current_time = 0, completed = 0;
+
+    while (completed < n) {
+        int idx = -1;
+        int min_rt = 999999;
+
+        for (int i = 0; i < n; i++) {
+            if (p[i].at <= current_time && p[i].rt > 0) {
+                if (p[i].rt < min_rt) {
+                    min_rt = p[i].rt;
+                    idx = i;
+                } else if (p[i].rt == min_rt && p[i].at < p[idx].at) {
+                    idx = i; // Tie-breaker: arrival time
+                }
             }
         }
-        bt[smallest]--;
-        
-        if(bt[smallest] == 0) {
-            count++;
-            end = time + 1;
-            wt = wt + end - at[smallest] - temp[smallest];
-            tat = tat + end - at[smallest];
+
+        if (idx != -1) {
+            p[idx].rt--;
+            current_time++;
+
+            if (p[idx].rt == 0) {
+                p[idx].ct = current_time;
+                p[idx].tat = p[idx].ct - p[idx].at;
+                p[idx].wt = p[idx].tat - p[idx].bt;
+                
+                total_tat += p[idx].tat;
+                total_wt += p[idx].wt;
+                completed++;
+            }
+        } else {
+            current_time++; // CPU is idle
         }
     }
-    
-    avg_wt = wt / limit;
-    avg_tat = tat / limit;
-    printf("\nAverage Waiting Time: %lf\n", avg_wt);
-    printf("Average Turnaround Time: %lf\n", avg_tat);
+
+    printf("\n--- SRTF (Preemptive) ---\nPID\tAT\tBT\tCT\tTAT\tWT\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n", p[i].pid, p[i].at, p[i].bt, p[i].ct, p[i].tat, p[i].wt);
+    }
+    printf("\nAvg Turnaround Time: %.2f\nAvg Waiting Time: %.2f\n", total_tat / n, total_wt / n);
+
     return 0;
 }
